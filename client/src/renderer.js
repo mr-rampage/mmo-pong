@@ -14,6 +14,8 @@ const gameState = {
         y: 0.5,
         r: 0.01
     },
+    leftScore: 0,
+    rightScore: 0,
     players: {
         left: [],
         right: []
@@ -41,22 +43,31 @@ function renderPaddle(selector, state) {
     paddle.setAttribute('y', state.y);
 }
 
-export function render({p1, p2, ball, players}) {
-    document.querySelector('#paddle-left').setAttribute('y', p1.y);
-    document.querySelector('#paddle-right').setAttribute('y', p2.y);
-    document.querySelector('#ball').setAttribute('x', ball.x);
-    document.querySelector('#ball').setAttribute('y', ball.y);
-    renderPlayers(players);
+export function render(gameState) {
+    updatePaddles(gameState);
+    updateBall(gameState);
+    updatePlayerCounts(gameState.players);
+    updateScores(gameState);
 }
 
-function renderPlayers(players = { left: [], right: [] }) {
+function updateBall({ball}) {
+    document.querySelector('#ball').setAttribute('x', ball.x);
+    document.querySelector('#ball').setAttribute('y', ball.y);
+}
+
+function updatePaddles({p1, p2}) {
+    document.querySelector('#paddle-left').setAttribute('y', p1.y);
+    document.querySelector('#paddle-right').setAttribute('y', p2.y);
+}
+
+function updatePlayerCounts(players = { left: [], right: [] }) {
     document.querySelector('#left-count').textContent = players.left.length;
     document.querySelector('#right-count').textContent = players.right.length;
 }
 
-function renderScore({leftScore = '-', rightScore = '-'}) {
-    document.querySelector('#left-score').textContent = leftScore;
-    document.querySelector('#right-score').textContent = rightScore;
+function updateScores({leftScore, rightScore}) {
+    document.querySelector('#left-score').textContent = leftScore.toString();
+    document.querySelector('#right-score').textContent = rightScore.toString();
 }
 
 
