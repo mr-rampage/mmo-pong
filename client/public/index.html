@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 
 <head lang="en">
@@ -33,13 +32,18 @@
 		</g>
 	</svg>
 	<script src="bundle.js">
-		var HOST = location.origin.replace(/^http/, 'ws')
-		var ws = new WebSocket(HOST);
-		var el;
+	</script>
+	<script>
+		let hostname = document.location.hostname;
+		let protocol = hostname === 'localhost' ? 'ws' : 'wss';
+		let port = hostname === 'localhost' ? ':5000' : '';
+		const ws = new WebSocket(`${protocol}://${hostname}${port}`);
+		ws.onopen = () => {
+		ws.send(JSON.stringify({type: 'PING'}));
+		};
 
-		ws.onmessage = function (event) {
-			el = document.getElementById('server-time');
-			el.innerHTML = 'Server time: ' + event.data;
+		ws.onmessage = (data) => {
+		console.log(data);
 		};
 	</script>
 </body>
