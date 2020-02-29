@@ -10,20 +10,8 @@ function mouseSource() {
     return pipe(
         fromEvent(document, 'mousemove'),
         map(ev => ev.screenY),
-        map(y => y / window.screen.height),
-        map(getDirection),
-        dropRepeats()
+        map(y => y / window.screen.height)
     )
-}
-
-function getDirection(unitY) {
-    if (unitY > 0.4 && unitY < 0.6) {
-        return 0;
-    } else if (unitY <= 0.4) {
-        return 1;
-    } else {
-        return -1;
-    }
 }
 
 function deviceOrientationSource() {
@@ -53,11 +41,5 @@ function deprecatedOrientationSource() {
 }
 
 function getOrientation(beta) {
-    if (beta > -0.1 && beta < 0.1) {
-        return 0;
-    } else if (beta <= 0.1) {
-        return 1;
-    } else {
-        return -1;
-    }
+    return beta;
 }
