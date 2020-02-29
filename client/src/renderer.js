@@ -1,10 +1,10 @@
 const gameState = {
-    player1: {
+    p1: {
         x: 0,
         y: 0.5,
         l: 0.1
     },
-    player2: {
+    p2: {
         x: 1,
         y: 0.5,
         l: 0.1
@@ -17,8 +17,8 @@ const gameState = {
 };
 
 function init(gameState) {
-    renderPaddle('#paddle-left', gameState.player1);
-    renderPaddle('#paddle-right', gameState.player2);
+    renderPaddle('#paddle-left', gameState.p1);
+    renderPaddle('#paddle-right', gameState.p2);
     renderBall('#ball', gameState.ball);
 }
 
@@ -38,8 +38,8 @@ function renderPaddle(selector, state) {
 }
 
 export function render(gameState) {
-    document.querySelector('#paddle-left').setAttribute('y', gameState.player1.y);
-    document.querySelector('#paddle-right').setAttribute('y', gameState.player2.y);
+    document.querySelector('#paddle-left').setAttribute('y', gameState.p1.y);
+    document.querySelector('#paddle-right').setAttribute('y', gameState.p2.y);
     document.querySelector('#ball').setAttribute('x', gameState.ball.x);
     document.querySelector('#ball').setAttribute('y', gameState.ball.y);
 }
