@@ -36,7 +36,7 @@ export default class NodeServer {
         this.adaptGameState(leftDecision, rightDecision);
         socket.send(JSON.stringify(this.gameState));
       });
-    }, 500);
+    }, 300);
   }
 
   getSocketServer(server) {
@@ -95,17 +95,23 @@ export default class NodeServer {
       const directions = Object.values(players).map(p => p.direction || 0);
       let average = directions.reduce((acc, d) => acc += d, 0) / totalPlayers;
 
-      if (average > 0) direction = 1;
-      else if (average === 0) direction = 0.5;
-      else direction = 0;
+      if (average > 0) direction = -0.1;
+      else if (average === 0) direction = 0;
+      else direction = 0.1;
     }
 
     return direction;
   }
 
   adaptGameState(leftDecision, rightDecision) {
-    this.gameState.p1.y = leftDecision;
-    this.gameState.p2.y = rightDecision;
+    let newLeft = this.gameState.p1.y + leftDecision;
+    let newRight = this.gameState.p2.y + rightDecision;
+    if (newLeft >= 0.0 && newLeft <= 1.0) {
+      this.gameState.p1.y = newLeft;
+    }
+    if (newRight >= 0.0 && newRight <= 1.0) {
+      this.gameState.p2.y = newRight;
+    }
   }
 }
 
