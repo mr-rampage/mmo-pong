@@ -16,7 +16,7 @@ export default class NodeServer {
     this.leftPlayers = {};
     this.rightPlayers = {};
     this.game = new Game();
-    console.log('Initting game', this.game);
+    console.log('Initializing game', this.game);
 
     // Game loop
     this.interval = setInterval(() => {
@@ -69,6 +69,13 @@ export default class NodeServer {
     // Don't redirect if the hostname is `localhost:port` or the route is `/insecure`
     app.use(httpsRedirect.redirectToHTTPS([/localhost:(\d{4})/], [], 301));
     app.use('/', express.static(__dirname + '/client/public'));
+
+    app.get('/reset', (req, res) => {
+      this.game.leftScore = 0;
+      this.game.rightScore = 0;
+      res.status(200).send('Reset scores to 0').end();
+    });
+
     return app.listen(this.port);
   }
 
