@@ -78,7 +78,7 @@ export default class NodeServer {
     const playerId = uuidv4();
     socket.playerId = playerId;
     socket.direction = 0;
-    this.leftPlayers[playerId] = socket;
+    team[playerId] = socket;
   }
 
   getAllPlayerStates() {
