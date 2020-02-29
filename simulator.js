@@ -15,7 +15,7 @@ export default class Game {
     // left player paddle
     this.leftPaddleHeight = 0.3;
     this.leftPaddleWidth = 0;
-    this.leftPaddleX = this.padding;
+    this.leftPaddleX = 0;
     this.leftPaddleY = this.worldHeight / 2 - this.leftPaddleHeight / 2;
 
     // Right player paddle
@@ -39,9 +39,11 @@ export default class Game {
     switch (leftDecision) {
       case "UP":
         this.leftUpPressed = true;
+        this.leftDownPressed = false;
         break;
       case "DOWN":
         this.leftDownPressed = true;
+        this.leftUpPressed = false;
         break;
       case "STOP":
         this.leftUpPressed = false;
@@ -54,8 +56,10 @@ export default class Game {
     switch (rightDecision) {
       case "UP":
         this.rightUpPressed = true;
+        this.rightDownPressed = false;
         break;
       case "DOWN":
+        this.rightUpPressed = false;
         this.rightDownPressed = true;
         break;
       case "STOP":
@@ -128,12 +132,15 @@ export default class Game {
 
   updateRightPaddle() {
     if (
-      this.rightDownPressed &&
-      this.rightPaddleY < this.worldHeight - this.rightPaddleHeight
+      this.rightDownPressed 
     ) {
-      this.rightPaddleY -= 0.07;
-    } else if (this.rightUpPressed && this.rightPaddleY > 0) {
       this.rightPaddleY += 0.07;
+      this.rightPaddleY  = Math.min(1, this.rightPaddleY);
+
+    } else if (this.rightUpPressed && this.rightPaddleY > 0) {
+      this.rightPaddleY -= 0.07;
+      this.rightPaddleY = Math.max(0, this.rightPaddleY);
+
     }
   }
   simulate({ leftDecision, rightDecision }) {
