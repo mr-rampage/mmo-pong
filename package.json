@@ -17,8 +17,7 @@
     "url": "https://github.com/mr-rampage/mmo-pong/issues"
   },
   "homepage": "https://github.com/mr-rampage/mmo-pong#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.6",
