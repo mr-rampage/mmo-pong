@@ -8,7 +8,7 @@ const hostname = document.location.hostname;
 const protocol = hostname === 'localhost' || document.location.protocol === 'http:' ? 'ws' : 'wss';
 const port = hostname === 'localhost' ? ':5000' : '';
 const url = `${protocol}://${hostname}${port}`;
-
+console.log(url);
 const ws = websocket(url);
 
 const gameState = pipe(
