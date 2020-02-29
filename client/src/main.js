@@ -52,14 +52,4 @@ function adaptGameState(msg) {
     };
 }
 
-observe(beta => {
-    document.querySelector('#left-score').textContent = beta
-})(
-    pipe(
-        fromEvent(window, "deviceorientation"),
-        map(ev => ev.beta),
-        map(Math.round)
-    )
-)
-
 init();

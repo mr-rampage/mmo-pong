@@ -1,4 +1,6 @@
 import express from 'express';
+import httpsRedirect from 'express-http-to-https';
+
 import {v4 as uuidv4} from 'uuid';
 import WebSocket from "ws";
 import Game from "./simulator";
@@ -64,6 +66,8 @@ export default class NodeServer {
 
   getHttpServer() {
     const app = express();
+    // Don't redirect if the hostname is `localhost:port` or the route is `/insecure`
+    app.use(httpsRedirect.redirectToHTTPS([/localhost:(\d{4})/], [], 301));
     app.use('/', express.static(__dirname + '/client/public'));
     return app.listen(this.port);
   }
