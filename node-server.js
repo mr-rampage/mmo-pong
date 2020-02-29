@@ -22,13 +22,13 @@ export default class NodeServer {
     this.interval = setInterval(() => {
       let leftDecision = this.determineDirection(this.leftPlayers);
       let rightDecision = this.determineDirection(this.rightPlayers);
-      let newGameState = this.game.simulate({leftDecision, rightDecision});
+      let newGameState = {...this.game.simulate({leftDecision, rightDecision}), ...this.getAllPlayerStates()};
 
       // console.log(`Decisions (${this.getTeamSize(this.leftPlayers)}, ${this.getTeamSize(this.rightPlayers)}): ${leftDecision}, ${rightDecision}`);
       this.wss.clients.forEach(socket => {
         socket.send(JSON.stringify(newGameState));
       });
-    }, 300);
+    }, 200);
   }
 
   getSocketServer(server) {
@@ -43,7 +43,6 @@ export default class NodeServer {
 
       socket.on('message', (payload) => {
         let message;
-        console.log(payload)
         try {
           message = JSON.parse(payload);
         } catch (e) {
@@ -55,8 +54,7 @@ export default class NodeServer {
             socket.send('PONG');
             break;
           case 'DIRECTION':
-            let direction = message.data;
-            socket.direction = direction;
+            socket.direction = message.data;
             break;
           default:
             console.log('received: %s', message);
@@ -81,6 +79,22 @@ export default class NodeServer {
     socket.playerId = playerId;
     socket.direction = 0;
     team[playerId] = socket;
+  }
+
+  getAllPlayerStates() {
+    let getPlayerState = socket => {
+      return {
+        y: socket.direction,
+        name: socket.playerId
+      };
+    };
+
+    return {
+      players: {
+        left: Object.values(this.leftPlayers).map(getPlayerState),
+        right: Object.values(this.rightPlayers).map(getPlayerState)
+      }
+    };
   }
 
   getTeamSize(players) {

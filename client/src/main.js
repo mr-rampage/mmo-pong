@@ -1,8 +1,8 @@
 import websocket from 'callbag-websocket';
 import observe from 'callbag-observe';
-import { pipe, map, fromEvent } from 'callbag-basics';
-import { controllerSource } from './controller';
-import init, { render } from './renderer';
+import {map, pipe} from 'callbag-basics';
+import {controllerSource} from './controller';
+import init, {render} from './renderer';
 
 const hostname = document.location.hostname;
 const protocol = hostname === 'localhost' || document.location.protocol === 'http:' ? 'ws' : 'wss';
@@ -33,23 +33,6 @@ function send(msg) {
 function draw(msg) {
     console.info("Received game state:", msg);
     render(msg);
-}
-
-function adaptGameState(msg) {
-    return {
-        p1: {
-            x: msg.p1[0],
-            y: msg.p1[1],
-        },
-        p2: {
-            x: msg.p2[0],
-            y: msg.p2[1],
-        },
-        ball: {
-            x: msg.ball[0],
-            y: msg.ball[1]
-        }
-    };
 }
 
 init();
