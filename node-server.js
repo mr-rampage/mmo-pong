@@ -24,7 +24,6 @@ export default class NodeServer {
       let rightDecision = this.determineDirection(this.rightPlayers);
       let newGameState = {...this.game.simulate({leftDecision, rightDecision}), ...this.getAllPlayerStates()};
 
-      // console.log(`Decisions (${this.getTeamSize(this.leftPlayers)}, ${this.getTeamSize(this.rightPlayers)}): ${leftDecision}, ${rightDecision}`);
       this.wss.clients.forEach(socket => {
         socket.send(JSON.stringify(newGameState));
       });
@@ -103,13 +102,13 @@ export default class NodeServer {
 
   determineDirection(players) {
     let totalPlayers = this.getTeamSize(players);
-    let direction = 0;
+    let direction = 'STOP';
     if (totalPlayers > 0) {
       const directions = Object.values(players).map(p => p.direction || 0);
       let average = directions.reduce((acc, d) => acc += d, 0) / totalPlayers;
 
-      if (average > 0) direction = 'DOWN';
-      else if (average === 0) direction = 'STOP';
+      if (average > 0.1) direction = 'DOWN';
+      else if (average >= -0.1 && average <= 0.1) direction = 'STOP';
       else direction = 'UP';
     }
 
