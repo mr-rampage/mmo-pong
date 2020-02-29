@@ -16,14 +16,16 @@ export default class NodeServer {
     this.leftPlayers = {};
     this.rightPlayers = {};
     this.game = new Game();
+    console.log('Initting game', this.game);
 
     // Game loop
     this.interval = setInterval(() => {
       let leftDecision = this.determineDirection(this.leftPlayers);
       let rightDecision = this.determineDirection(this.rightPlayers);
-      console.log(`Decisions (${this.getTeamSize(this.leftPlayers)}, ${this.getTeamSize(this.rightPlayers)}): ${leftDecision}, ${rightDecision}`);
+      let newGameState = this.game.simulate({leftDecision, rightDecision});
+
+      // console.log(`Decisions (${this.getTeamSize(this.leftPlayers)}, ${this.getTeamSize(this.rightPlayers)}): ${leftDecision}, ${rightDecision}`);
       this.wss.clients.forEach(socket => {
-        let newGameState = this.game.simulate({leftDecision, rightDecision});
         socket.send(JSON.stringify(newGameState));
       });
     }, 300);
@@ -41,6 +43,7 @@ export default class NodeServer {
 
       socket.on('message', (payload) => {
         let message;
+        console.log(payload)
         try {
           message = JSON.parse(payload);
         } catch (e) {

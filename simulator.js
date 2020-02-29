@@ -6,7 +6,7 @@ export default class Game {
     this.padding = 0.01;
 
     // ball
-    this.x = worldWidth / 2;
+    this.x = this.worldWidth / 2;
     this.y = 0;
     this.dx = 0.04;
     this.dy = 0.04;
@@ -15,14 +15,14 @@ export default class Game {
     // left player paddle
     this.leftPaddleHeight = 0.3;
     this.leftPaddleWidth = 0.1;
-    this.leftPaddleX = padding;
-    this.leftPaddleY = worldHeight / 2 - leftPaddleHeight / 2;
+    this.leftPaddleX = this.padding;
+    this.leftPaddleY = this.worldHeight / 2 - this.leftPaddleHeight / 2;
 
     // Right player paddle
     this.rightPaddleHeight = 0.3;
     this.rightPaddleWidth = 0.1;
-    this.rightPaddleX = worldWidth - (rightPaddleWidth + padding);
-    this.rightPaddleY = worldHeight / 2 - rightPaddleHeight / 2;
+    this.rightPaddleX = this.worldWidth - (this.rightPaddleWidth + this.padding);
+    this.rightPaddleY = this.worldHeight / 2 - this.rightPaddleHeight / 2;
 
     // boolean to handle direction changes
     this.leftUpPressed = false;
@@ -36,7 +36,7 @@ export default class Game {
   }
 
   handleInput({ leftDecision, rightDecision }) {
-    switch (leftDecision.direction) {
+    switch (leftDecision) {
       case "UP":
         this.leftUpPressed = true;
         break;
@@ -51,7 +51,7 @@ export default class Game {
         break;
     }
 
-    switch (rightDecision.direction) {
+    switch (rightDecision) {
       case "UP":
         this.rightUpPressed = true;
         break;
@@ -77,7 +77,7 @@ export default class Game {
       else if (this.x - this.ballRadius <= 0) {
         this.rightScore++;
         this.x = this.worldWidth / 2;
-        this.y = worldHeight / 2;
+        this.y = this.worldHeight / 2;
         this.dx = -this.dx;
         this.dy = -this.dy;
       }
@@ -94,23 +94,23 @@ export default class Game {
       else if (this.x + this.ballRadius >= this.worldWidth) {
         this.leftScore++;
         //alert("Game Over");
-        this.x = worldWidth / 2;
-        this.y = worldHeight / 2;
-        this.dx = -dx;
-        this.dy = -dy;
+        this.x = this.worldWidth / 2;
+        this.y = this.worldHeight / 2;
+        this.dx = -this.dx;
+        this.dy = -this.dy;
         //document.location.reload();
       }
     }
   }
 
   computeCollisionsWithWallsAndPaddle() {
-    collisionsWithLeftPaddle();
-    collisionsWithRightPaddle();
+    this.collisionsWithLeftPaddle();
+    this.collisionsWithRightPaddle();
     if (
       this.y - this.ballRadius <= 0 ||
       this.y + this.ballRadius >= this.worldHeight
     ) {
-      this.dy = -dy;
+      this.dy = -this.dy;
     }
   }
 
@@ -119,9 +119,9 @@ export default class Game {
       this.leftDownPressed &&
       this.leftPaddleY < this.worldHeight - this.leftPaddleHeight
     ) {
-      this.leftPaddleY += 0.7;
+      this.leftPaddleY += 0.007;
     } else if (this.leftUpPressed && this.leftPaddleY > 0) {
-      this.leftPaddleY -= 0.7;
+      this.leftPaddleY -= 0.007;
     }
   }
 
@@ -130,18 +130,19 @@ export default class Game {
       this.rightDownPressed &&
       this.rightPaddleY < this.worldHeight - this.rightPaddleHeight
     ) {
-      this.rightPaddleY += 0.7;
+      this.rightPaddleY += 0.007;
     } else if (this.rightUpPressed && this.rightPaddleY > 0) {
-      this.rightPaddleY -= 0.7;
+      this.rightPaddleY -= 0.007;
     }
   }
-  simulate({ leftPaddleDirection, rightPaddleDirection }) {
-    handleInput({ leftPaddleDirection, rightPaddleDirection });
-    updateLeftPaddle();
-    updateRightPaddle();
-    computeCollisionsWithWallsAndPaddle();
-    this.x += dx;
-    this.y += dy;
+  simulate({ leftDecision, rightDecision }) {
+      console.log('Simulating', leftDecision, rightDecision);
+    this.handleInput({ leftDecision, rightDecision });
+    this.updateLeftPaddle();
+    this.updateRightPaddle();
+    this.computeCollisionsWithWallsAndPaddle();
+    this.x += this.dx;
+    this.y += this.dy;
     return {
       ball: { x: this.x, y: this.y },
       p1: { x: this.leftPaddleX, y: this.leftPaddleY },
