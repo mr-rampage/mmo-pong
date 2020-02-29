@@ -41,17 +41,22 @@ function renderPaddle(selector, state) {
     paddle.setAttribute('y', state.y);
 }
 
-export function render(gameState) {
-    document.querySelector('#paddle-left').setAttribute('y', gameState.p1.y);
-    document.querySelector('#paddle-right').setAttribute('y', gameState.p2.y);
-    document.querySelector('#ball').setAttribute('x', gameState.ball.x);
-    document.querySelector('#ball').setAttribute('y', gameState.ball.y);
-    renderPlayers(gameState.players);
+export function render({p1, p2, ball, players}) {
+    document.querySelector('#paddle-left').setAttribute('y', p1.y);
+    document.querySelector('#paddle-right').setAttribute('y', p2.y);
+    document.querySelector('#ball').setAttribute('x', ball.x);
+    document.querySelector('#ball').setAttribute('y', ball.y);
+    renderPlayers(players);
 }
 
 function renderPlayers(players = { left: [], right: [] }) {
     document.querySelector('#left-count').textContent = players.left.length;
     document.querySelector('#right-count').textContent = players.right.length;
+}
+
+function renderScore({leftScore = '-', rightScore = '-'}) {
+    document.querySelector('#left-score').textContent = leftScore;
+    document.querySelector('#right-score').textContent = rightScore;
 }
 
 
