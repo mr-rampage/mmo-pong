@@ -7,7 +7,7 @@ export default class HttpServer {
   }
 
   start() {
-    http.createServer((req, res) => {
+    const server = http.createServer((req, res) => {
       fs.readFile(__dirname + '/index.html', (err, data) => {
         if (err) {
           res.writeHead(404);
@@ -17,9 +17,13 @@ export default class HttpServer {
         res.writeHead(200);
         res.end(data);
       });
-    }).listen(this.port);
+    });
+    
+    server.listen(this.port);
 
     console.log(`HTTP Server started on ${this.port}`);
+
+    return server;
   }
 }
 

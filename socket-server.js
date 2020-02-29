@@ -1,14 +1,14 @@
 import WebSocket from 'ws';
 
 export default class SocketServer {
-  constructor(port) {
-    this.port = port;
+  constructor(server) {
+    this.server = server;
   }
 
   start() {
     this.wss = new WebSocket.Server({
-      port: this.port
-    }, () => console.log(`Websocket server listening on port ${this.port}`));
+      server: this.server
+    }, () => console.log(`Websocket server listening on port ${this.server.port}`));
 
     this.wss.on('connection', (socket) => {
       socket.on('message', (payload) => {
