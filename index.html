@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html>
+  <script>
+    const ws = new WebSocket(`ws://${document.location.hostname}:5001`);
+    ws.onopen = () => {
+      ws.send(JSON.stringify({type: 'PING'}));
+    };
+
+    ws.onmessage = (data) => {
+      console.log(data);
+    };
+  </script>
   <body>
     <h1>MMO Pong Client!</h1>
   </body>
