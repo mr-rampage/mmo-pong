@@ -3,11 +3,7 @@ import dropRepeats from 'callbag-drop-repeats';
 import { AbsoluteOrientationSensor } from 'motion-sensors-polyfill';
 
 export function controllerSource() {
-    if (window.DeviceOrientationEvent) {
-        return deviceOrientationSource()
-    } else {
-        return mouseSource();
-    }
+    return deviceOrientationSource()
 }
 
 function mouseSource() {
@@ -19,7 +15,6 @@ function mouseSource() {
         dropRepeats()
     )
 }
-
 
 function getDirection(unitY) {
     if (unitY > 0.4 && unitY < 0.6) {
