@@ -1,4 +1,4 @@
-import {map, pipe, merge, flatten, fromEvent, fromPromise} from 'callbag-basics';
+import {map, pipe, merge, fromEvent} from 'callbag-basics';
 import dropRepeats from 'callbag-drop-repeats';
 import { AbsoluteOrientationSensor } from 'motion-sensors-polyfill';
 
