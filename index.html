@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
   <script>
-    const ws = new WebSocket(`ws://${document.location.hostname}`);
+    let hostname = document.location.hostname;
+    let protocol = hostname === 'localhost' ? 'ws' : 'wss';
+    let port = hostname === 'localhost' ? ':5000' : '';
+    const ws = new WebSocket(`${protocol}://${hostname}${port}`);
     ws.onopen = () => {
       ws.send(JSON.stringify({type: 'PING'}));
     };
