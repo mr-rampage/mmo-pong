@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <script>
-    const ws = new WebSocket(`ws://${document.location.hostname}:5000`);
+    const ws = new WebSocket(`ws://${document.location.hostname}`);
     ws.onopen = () => {
       ws.send(JSON.stringify({type: 'PING'}));
     };
