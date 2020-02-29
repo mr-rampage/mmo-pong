@@ -1,5 +1,4 @@
-import fs from 'fs';
-import http from 'http';
+import express from 'express';
 import WebSocket from "ws";
 
 export default class NodeServer {
@@ -8,18 +7,11 @@ export default class NodeServer {
   }
 
   start() {
-    const server = http.createServer((req, res) => {
-      fs.readFile(__dirname + '/client/public/index.html', (err, data) => {
-        if (err) {
-          res.writeHead(404);
-          res.end(JSON.stringify(err));
-          return;
-        }
-        res.writeHead(200);
-        res.end(data);
-      });
-    }).listen(this.port);
+    this.getSocketServer(this.getHttpServer());
+    console.log(`Server started on ${this.port}`);
+  }
 
+  getSocketServer(server) {
     const wss = new WebSocket.Server({server});
 
     wss.on('connection', (socket) => {
@@ -32,15 +24,30 @@ export default class NodeServer {
         }
 
         switch (message.type) {
-          case 'PING': socket.send('PONG'); break;
+          case 'PING':
+            socket.send('PONG');
+            break;
+          case 'DIRECTION':
+            let direction = message.data;
+            console.log('direction: :' + direction);
+            socket.send(JSON.stringify({
+              p1: [0, 0],
+              p2: [1, 1],
+              ball: [0, 0]
+            }));
+            break;
           default:
             console.log('received: %s', message);
             break;
         }
       });
     });
+  }
 
-    console.log(`Server started on ${this.port}`);
+  getHttpServer() {
+    const app = express();
+    app.use('/', express.static(__dirname + '/client/public'));
+    return app.listen(this.port);
   }
 }
 
