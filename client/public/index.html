@@ -1,11 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head lang='en'>
-	<meta charset='utf-8'>
-	<meta name='viewport' content='width=device-width'>
-	<title>rollup-starter-app</title>
-</head>
-<body>
-	<script src='bundle.js'></script>
-</body>
+  <head lang="en">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>rollup-starter-app</title>
+  </head>
+  <body>
+    <script src="bundle.js">
+	  var HOST = location.origin.replace(/^http/, 'ws')
+      var ws = new WebSocket(HOST);
+      var el;
+
+      ws.onmessage = function (event) {
+        el = document.getElementById('server-time');
+        el.innerHTML = 'Server time: ' + event.data;
+      };
+    </script>
+  </body>
 </html>
