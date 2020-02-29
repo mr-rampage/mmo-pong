@@ -1,6 +1,6 @@
 import websocket from 'callbag-websocket';
 import observe from 'callbag-observe';
-import { controllerSource } from './controller';
+import { controllerSource, mouseSource } from './controller';
 
 //const ws = websocket('ws://' + location.hostname + '/');
 
@@ -8,6 +8,13 @@ import { controllerSource } from './controller';
 
 const direction = controllerSource();
 observe(msg => console.log(msg))(direction);
+
+observe(msg => {
+    console.log(msg)
+
+    document.querySelector('#paddle-left').setAttribute('y', msg);
+
+})(mouseSource());
 
 const gameState = {
     player1: {
