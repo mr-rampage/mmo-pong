@@ -35,8 +35,8 @@ export default class Game {
     this.rightScore = 0;
   }
 
-  handleInput({ leftPaddle, rightPaddle }) {
-    switch (leftPaddle.direction) {
+  handleInput({ leftDecision, rightDecision }) {
+    switch (leftDecision.direction) {
       case "UP":
         this.leftUpPressed = true;
         break;
@@ -51,7 +51,7 @@ export default class Game {
         break;
     }
 
-    switch (rightPaddle.direction) {
+    switch (rightDecision.direction) {
       case "UP":
         this.rightUpPressed = true;
         break;
@@ -143,8 +143,9 @@ export default class Game {
     this.x += dx;
     this.y += dy;
     return {
-      ballX: this.x,
-      ballY: this.y,
+      ball: { x: this.x, y: this.y },
+      p1: { x: this.leftPaddleX, y: this.leftPaddleY },
+      p2: { x: this.rightPaddleX, y: this.rightPaddleY },
       leftScore: this.leftScore,
       rightScore: this.rightScore
     };

@@ -1,6 +1,7 @@
 import express from 'express';
 import {v4 as uuidv4} from 'uuid';
 import WebSocket from "ws";
+import Game from "./simulator";
 
 export default class NodeServer {
   constructor(port) {
@@ -12,20 +13,7 @@ export default class NodeServer {
     // uuid -> socket
     this.leftPlayers = {};
     this.rightPlayers = {};
-    this.gameState = {
-      p1: {
-        x: 0.0,
-        y: 0.5,
-      },
-      p2: {
-        x: 1.0,
-        y: 0.5,
-      },
-      ball: {
-        x: 0.5,
-        y: 0.5
-      }
-    };
+    this.game = new Game();
 
     // Game loop
     this.interval = setInterval(() => {
@@ -33,8 +21,8 @@ export default class NodeServer {
       let rightDecision = this.determineDirection(this.rightPlayers);
       console.log(`Decisions (${Object.keys(this.leftPlayers).length}, ${Object.keys(this.rightPlayers).length}): ${leftDecision}, ${rightDecision}`);
       this.wss.clients.forEach(socket => {
-        this.adaptGameState(leftDecision, rightDecision);
-        socket.send(JSON.stringify(this.gameState));
+        let newGameState = this.game.simulate({leftDecision, rightDecision});
+        socket.send(JSON.stringify(newGameState));
       });
     }, 300);
   }
@@ -95,23 +83,13 @@ export default class NodeServer {
       const directions = Object.values(players).map(p => p.direction || 0);
       let average = directions.reduce((acc, d) => acc += d, 0) / totalPlayers;
 
-      if (average > 0) direction = -0.1;
-      else if (average === 0) direction = 0;
-      else direction = 0.1;
+      if (average > 0) direction = 'DOWN';
+      else if (average === 0) direction = 'STOP';
+      else direction = 'UP';
     }
 
     return direction;
   }
 
-  adaptGameState(leftDecision, rightDecision) {
-    let newLeft = this.gameState.p1.y + leftDecision;
-    let newRight = this.gameState.p2.y + rightDecision;
-    if (newLeft >= 0.0 && newLeft <= 1.0) {
-      this.gameState.p1.y = newLeft;
-    }
-    if (newRight >= 0.0 && newRight <= 1.0) {
-      this.gameState.p2.y = newRight;
-    }
-  }
 }
 
