@@ -5,7 +5,7 @@ import { controllerSource } from './controller';
 import init, { render } from './renderer';
 
 const hostname = document.location.hostname;
-const protocol = hostname === 'localhost' ? 'ws' : 'wss';
+const protocol = hostname === 'localhost' || document.location.protocol === 'http:' ? 'ws' : 'wss';
 const port = hostname === 'localhost' ? ':5000' : '';
 const url = `${protocol}://${hostname}${port}`;
 
