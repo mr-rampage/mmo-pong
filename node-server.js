@@ -21,7 +21,7 @@ export default class NodeServer {
     this.interval = setInterval(() => {
       let leftDecision = this.determineDirection(this.leftPlayers);
       let rightDecision = this.determineDirection(this.rightPlayers);
-      console.log(`Decisions (${Object.keys(this.leftPlayers).length}, ${Object.keys(this.rightPlayers).length}): ${leftDecision}, ${rightDecision}`);
+      console.log(`Decisions (${this.getTeamSize(this.leftPlayers)}, ${this.getTeamSize(this.rightPlayers)}): ${leftDecision}, ${rightDecision}`);
       this.wss.clients.forEach(socket => {
         let newGameState = this.game.simulate({leftDecision, rightDecision});
         socket.send(JSON.stringify(newGameState));
@@ -73,15 +73,19 @@ export default class NodeServer {
   }
 
   assignPlayer(socket) {
-    const team = (this.leftPlayers.length < this.rightPlayers.length) ? this.leftPlayers : this.rightPlayers;
+    const team = (this.getTeamSize(this.leftPlayers) < this.getTeamSize(this.rightPlayers)) ? this.leftPlayers : this.rightPlayers;
     const playerId = uuidv4();
     socket.playerId = playerId;
     socket.direction = 0;
     team[playerId] = socket;
   }
 
+  getTeamSize(players) {
+    return Object.keys(players).length;
+  }
+
   determineDirection(players) {
-    let totalPlayers = Object.keys(players).length;
+    let totalPlayers = this.getTeamSize(players);
     let direction = 0;
     if (totalPlayers > 0) {
       const directions = Object.values(players).map(p => p.direction || 0);
