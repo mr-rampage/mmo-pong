@@ -73,12 +73,13 @@ export default class NodeServer {
   }
 
   assignPlayer(socket) {
-    const team = (this.getTeamSize(this.leftPlayers) < this.getTeamSize(this.rightPlayers)) ? this.leftPlayers : this.rightPlayers;
+    const isLeft = this.getTeamSize(this.leftPlayers) < this.getTeamSize(this.rightPlayers);
+    const team = (isLeft) ? this.leftPlayers : this.rightPlayers;
     const playerId = uuidv4();
     socket.playerId = playerId;
     socket.direction = 0;
     team[playerId] = socket;
-    socket.send({type: 'IDENTIFY', playerId: playerId});
+    socket.send({type: 'IDENTIFY', playerId: playerId, isLeft: isLeft});
   }
 
   getAllPlayerStates() {
