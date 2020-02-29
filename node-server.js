@@ -9,7 +9,7 @@ export default class NodeServer {
 
   start() {
     const server = http.createServer((req, res) => {
-      fs.readFile(__dirname + '/index.html', (err, data) => {
+      fs.readFile(__dirname + '/client/public/index.html', (err, data) => {
         if (err) {
           res.writeHead(404);
           res.end(JSON.stringify(err));
