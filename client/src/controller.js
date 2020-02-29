@@ -9,7 +9,7 @@ export function controllerSource() {
     }
 }
 
-export function mouseSource() {
+function mouseSource() {
     return pipe(
         fromEvent(document, 'mousemove'),
         map(ev => ev.screenY),
