@@ -1,6 +1,6 @@
 import websocket from 'callbag-websocket';
 import observe from 'callbag-observe';
-import { pipe, map } from 'callbag-basics';
+import { pipe, map, fromEvent } from 'callbag-basics';
 import { controllerSource } from './controller';
 import init, { render } from './renderer';
 
@@ -34,5 +34,32 @@ function draw(msg) {
     console.info("Received game state:", msg);
     render(msg);
 }
+
+function adaptGameState(msg) {
+    return {
+        p1: {
+            x: msg.p1[0],
+            y: msg.p1[1],
+        },
+        p2: {
+            x: msg.p2[0],
+            y: msg.p2[1],
+        },
+        ball: {
+            x: msg.ball[0],
+            y: msg.ball[1]
+        }
+    };
+}
+
+observe(beta => {
+    document.querySelector('#left-score').textContent = beta
+})(
+    pipe(
+        fromEvent(window, "deviceorientation"),
+        map(ev => ev.beta),
+        map(Math.round)
+    )
+)
 
 init();
