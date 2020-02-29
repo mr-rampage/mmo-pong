@@ -1,5 +1,6 @@
 import {map, pipe, fromEvent} from 'callbag-basics';
 import dropRepeats from 'callbag-drop-repeats';
+import { AbsoluteOrientationSensor } from 'motion-sensors-polyfill';
 
 export function controllerSource() {
     if (window.DeviceOrientationEvent) {
@@ -31,18 +32,21 @@ function getDirection(unitY) {
 }
 
 function deviceOrientationSource() {
+    const orientation = new AbsoluteOrientationSensor({ frequency: 30 });
+    orientation.start();
     return pipe(
-        fromEvent(window, "deviceorientation"),
-        map(ev => ev.beta),
+        fromEvent(orientation, "reading"),
+        map(ev => ev.target.quaternion),
+        map(quaternion => quaternion[0]),
         map(getOrientation),
         dropRepeats()
     )
 }
 
 function getOrientation(beta) {
-    if (beta > -10 && beta < 10) {
+    if (beta > -0.1 && beta < 0.1) {
         return 0;
-    } else if (beta <= 10) {
+    } else if (beta <= 0.1) {
         return 1;
     } else {
         return -1;
