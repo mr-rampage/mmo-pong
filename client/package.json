@@ -12,8 +12,7 @@
     "callbag-basics": "^3.2.0",
     "callbag-drop-repeats": "^1.0.0",
     "callbag-observe": "^1.0.0",
-    "callbag-websocket": "^1.0.1",
-    "date-fns": "^1.30.1"
+    "callbag-websocket": "^1.0.1"
   },
   "scripts": {
     "build": "rollup -c",
