@@ -79,7 +79,7 @@ export default class NodeServer {
     socket.playerId = playerId;
     socket.direction = 0;
     team[playerId] = socket;
-    socket.send({type: 'IDENTIFY', playerId: playerId, isLeft: isLeft});
+    socket.send(JSON.stringify({type: 'IDENTIFY', playerId: playerId, isLeft: isLeft}));
   }
 
   getAllPlayerStates() {
