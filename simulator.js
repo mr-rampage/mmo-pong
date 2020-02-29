@@ -3,8 +3,7 @@ export default class Game {
     // world
     this.worldWidth = 1;
     this.worldHeight = 1;
-    this.padding = 0;
-
+    this.padding = 0
     // ball
     this.x = this.worldWidth / 2;
     this.y = 0;
@@ -13,13 +12,13 @@ export default class Game {
     this.ballRadius = 0.1;
 
     // left player paddle
-    this.leftPaddleHeight = 0.3;
+    this.leftPaddleHeight = 0.1;
     this.leftPaddleWidth = 0;
     this.leftPaddleX = 0;
     this.leftPaddleY = this.worldHeight / 2 - this.leftPaddleHeight / 2;
 
     // Right player paddle
-    this.rightPaddleHeight = 0.3;
+    this.rightPaddleHeight = 0.1;
     this.rightPaddleWidth = 0;
     this.rightPaddleX = this.worldWidth - (this.rightPaddleWidth + this.padding);
     this.rightPaddleY = this.worldHeight / 2 - this.rightPaddleHeight / 2;
