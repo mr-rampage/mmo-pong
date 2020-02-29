@@ -13,9 +13,8 @@ const ws = websocket(url);
 
 const gameState = pipe(
     ws,
-    map(msg => JSON.parse(msg.data)),
-    map(adaptGameState)
-)
+    map(msg => JSON.parse(msg.data))
+);
 
 observe(draw)(gameState);
 
@@ -34,23 +33,6 @@ function send(msg) {
 function draw(msg) {
     console.info("Received game state:", msg);
     render(msg);
-}
-
-function adaptGameState(msg) {
-    return {
-        p1: {
-            x: msg.p1[0],
-            y: msg.p1[1],
-        },
-        p2: {
-            x: msg.p2[0],
-            y: msg.p2[1],
-        },
-        ball: {
-            x: msg.ball[0],
-            y: msg.ball[1]
-        }
-    };
 }
 
 init();

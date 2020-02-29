@@ -5,27 +5,42 @@ import WebSocket from "ws";
 export default class NodeServer {
   constructor(port) {
     this.port = port;
+
+    this.wss = this.getSocketServer(this.getHttpServer());
+    console.log(`Server started on ${this.port}`);
+
     // uuid -> socket
     this.leftPlayers = {};
     this.rightPlayers = {};
+    this.gameState = {
+      p1: {
+        x: 0.0,
+        y: 0.5,
+      },
+      p2: {
+        x: 1.0,
+        y: 0.5,
+      },
+      ball: {
+        x: 0.5,
+        y: 0.5
+      }
+    };
 
     // Game loop
     this.interval = setInterval(() => {
       let leftDecision = this.determineDirection(this.leftPlayers);
       let rightDecision = this.determineDirection(this.rightPlayers);
       console.log(`Decisions (${Object.keys(this.leftPlayers).length}, ${Object.keys(this.rightPlayers).length}): ${leftDecision}, ${rightDecision}`);
-      // TODO: Broadcast game state to clients
+      this.wss.clients.forEach(socket => {
+        this.adaptGameState(leftDecision, rightDecision);
+        socket.send(JSON.stringify(this.gameState));
+      });
     }, 500);
-  }
-
-  start() {
-    this.getSocketServer(this.getHttpServer());
-    console.log(`Server started on ${this.port}`);
   }
 
   getSocketServer(server) {
     const wss = new WebSocket.Server({server});
-
     wss.on('connection', (socket) => {
       this.assignPlayer(socket);
 
@@ -56,6 +71,7 @@ export default class NodeServer {
         }
       });
     });
+    return wss;
   }
 
   getHttpServer() {
@@ -74,16 +90,22 @@ export default class NodeServer {
 
   determineDirection(players) {
     let totalPlayers = Object.keys(players).length;
+    let direction = 0;
     if (totalPlayers > 0) {
       const directions = Object.values(players).map(p => p.direction || 0);
       let average = directions.reduce((acc, d) => acc += d, 0) / totalPlayers;
 
-      if (average > 0) return 1;
-      else if (average === 0) return 0;
-      else return -1;
+      if (average > 0) direction = 1;
+      else if (average === 0) direction = 0.5;
+      else direction = 0;
     }
 
-    return 0;
+    return direction;
+  }
+
+  adaptGameState(leftDecision, rightDecision) {
+    this.gameState.p1.y = leftDecision;
+    this.gameState.p2.y = rightDecision;
   }
 }
 
