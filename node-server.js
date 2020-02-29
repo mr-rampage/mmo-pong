@@ -25,6 +25,7 @@ export default class NodeServer {
       let newGameState = {...this.game.simulate({leftDecision, rightDecision}), ...this.getAllPlayerStates()};
 
       this.wss.clients.forEach(socket => {
+        newGameState.youAreLeft = Object.keys(this.leftPlayers).includes(socket.playerId);
         socket.send(JSON.stringify(newGameState));
       });
     }, 200);
@@ -86,7 +87,6 @@ export default class NodeServer {
     socket.playerId = playerId;
     socket.direction = 0;
     team[playerId] = socket;
-    socket.send(JSON.stringify({type: 'IDENTIFY', playerId: playerId, isLeft: isLeft}));
   }
 
   getAllPlayerStates() {
