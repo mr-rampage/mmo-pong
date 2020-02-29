@@ -21,7 +21,7 @@ observe(draw)(gameState);
 
 const direction = pipe(
     controllerSource(),
-    map(direction => ({ type: 'DIRECTION', direction }))
+    map(direction => ({ type: 'DIRECTION', data: direction }))
 );
 
 observe(send)(direction);

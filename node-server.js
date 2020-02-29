@@ -1,9 +1,21 @@
 import express from 'express';
+import {v4 as uuidv4} from 'uuid';
 import WebSocket from "ws";
 
 export default class NodeServer {
   constructor(port) {
     this.port = port;
+    // uuid -> socket
+    this.leftPlayers = {};
+    this.rightPlayers = {};
+
+    // Game loop
+    this.interval = setInterval(() => {
+      let leftDecision = this.determineDirection(this.leftPlayers);
+      let rightDecision = this.determineDirection(this.rightPlayers);
+      console.log(`Decisions (${Object.keys(this.leftPlayers).length}, ${Object.keys(this.rightPlayers).length}): ${leftDecision}, ${rightDecision}`);
+      // TODO: Broadcast game state to clients
+    }, 500);
   }
 
   start() {
@@ -15,6 +27,13 @@ export default class NodeServer {
     const wss = new WebSocket.Server({server});
 
     wss.on('connection', (socket) => {
+      this.assignPlayer(socket);
+
+      socket.on('close', () => {
+        delete this.leftPlayers[socket.playerId];
+        delete this.rightPlayers[socket.playerId];
+      });
+
       socket.on('message', (payload) => {
         let message;
         try {
@@ -29,12 +48,7 @@ export default class NodeServer {
             break;
           case 'DIRECTION':
             let direction = message.data;
-            console.log('direction: :' + direction);
-            socket.send(JSON.stringify({
-              p1: [0, 0],
-              p2: [1, 1],
-              ball: [0, 0]
-            }));
+            socket.direction = direction;
             break;
           default:
             console.log('received: %s', message);
@@ -48,6 +62,28 @@ export default class NodeServer {
     const app = express();
     app.use('/', express.static(__dirname + '/client/public'));
     return app.listen(this.port);
+  }
+
+  assignPlayer(socket) {
+    const team = (this.leftPlayers.length < this.rightPlayers.length) ? this.leftPlayers : this.rightPlayers;
+    const playerId = uuidv4();
+    socket.playerId = playerId;
+    socket.direction = 0;
+    team[playerId] = socket;
+  }
+
+  determineDirection(players) {
+    let totalPlayers = Object.keys(players).length;
+    if (totalPlayers > 0) {
+      const directions = Object.values(players).map(p => p.direction || 0);
+      let average = directions.reduce((acc, d) => acc += d, 0) / totalPlayers;
+
+      if (average > 0) return 1;
+      else if (average === 0) return 0;
+      else return -1;
+    }
+
+    return 0;
   }
 }
 
