@@ -43,7 +43,6 @@ export default class NodeServer {
 
       socket.on('message', (payload) => {
         let message;
-        console.log(payload)
         try {
           message = JSON.parse(payload);
         } catch (e) {
@@ -80,7 +79,7 @@ export default class NodeServer {
     const playerId = uuidv4();
     socket.playerId = playerId;
     socket.direction = 0;
-    team[playerId] = socket;
+    this.leftPlayers[playerId] = socket;
   }
 
   getTeamSize(players) {
