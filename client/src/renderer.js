@@ -50,21 +50,9 @@ export function render(gameState) {
 }
 
 function renderPlayers(players = { left: [], right: [] }) {
-    const playerDom = document.querySelector('#players')
-    playerDom.innerHTML = '';
-
-    players.left.forEach(player => playerDom.appendChild( createPlayer(Math.random() * 0.05 + 0.90, player.y)));
-    players.right.forEach(player => playerDom.appendChild( createPlayer(Math.random() * 0.05 + 0.05, player.y)));
+    document.querySelector('#left-count').textContent = players.left.length;
+    document.querySelector('#right-count').textContent = players.right.length;
 }
 
-function createPlayer(x, y) {
-    const player = document.createElement('rect');
-    player.setAttribute("width", "0.01");
-    player.setAttribute("height", "0.01");
-    player.setAttribute("x", x.toString());
-    player.setAttribute("y", y.toString());
-    player.setAttribute("fill", "white");
-    return player;
-}
 
 export default () => init(gameState);

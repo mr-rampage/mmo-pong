@@ -28,7 +28,7 @@
 		<text text-anchor="middle" x="0.5" y="0.05" font-size="0.05" font-family="Press Start 2P" fill="white">World of Pong</text>
 		<text id="left-score" text-anchor="middle" x="0.25" y="0.15" font-size="0.05" font-family="Press Start 2P" fill="white">0</text>
 		<text id="right-score" text-anchor="middle" x="0.75" y="0.15" font-size="0.05" font-family="Press Start 2P" fill="white">0</text>
-		<line x1="0.5" y1="0.05" x2="0.5" y2="0.95" stroke="gray" stroke-width="0.001" stroke-dasharray="0.1" />
+		<line x1="0.5" y1="0.05" x2="0.5" y2="0.9" stroke="gray" stroke-width="0.001" stroke-dasharray="0.1" />
 		<g transform="translate(-0.005, -0.005)">
 			<rect id="ball" width="0.01" height="0.01" x="0.5" y="0.5" fill="white" />
 		</g>
@@ -36,7 +36,11 @@
 			<rect id="paddle-left" width="0.05" height="0.1" x="0" y="0.5" fill="white" />
 			<rect id="paddle-right" width="0.05" height="0.1" x="1" y="0.5" fill="white" />
 		</g>
-		<g id="players"></g>
+		<g>
+			<text text-anchor="middle" x="0.5" y="0.95" font-size="0.025" font-family="Press Start 2P" fill="white">Players</text>
+			<text id="left-count" text-anchor="middle" x="0.05" y="0.95" font-size="0.025" font-family="Press Start 2P" fill="white">0</text>
+			<text id="right-count" text-anchor="middle" x="0.95" y="0.95" font-size="0.025" font-family="Press Start 2P" fill="white">0</text>
+		</g>
 	</svg>
 	<script src="bundle.js"></script>
 </body>
