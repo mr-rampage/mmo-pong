@@ -3,7 +3,7 @@ export default class Game {
     // world
     this.worldWidth = 1;
     this.worldHeight = 1;
-    this.padding = 0.01;
+    this.padding = 0;
 
     // ball
     this.x = this.worldWidth / 2;
@@ -14,13 +14,13 @@ export default class Game {
 
     // left player paddle
     this.leftPaddleHeight = 0.3;
-    this.leftPaddleWidth = 0.1;
+    this.leftPaddleWidth = 0;
     this.leftPaddleX = this.padding;
     this.leftPaddleY = this.worldHeight / 2 - this.leftPaddleHeight / 2;
 
     // Right player paddle
     this.rightPaddleHeight = 0.3;
-    this.rightPaddleWidth = 0.1;
+    this.rightPaddleWidth = 0;
     this.rightPaddleX = this.worldWidth - (this.rightPaddleWidth + this.padding);
     this.rightPaddleY = this.worldHeight / 2 - this.rightPaddleHeight / 2;
 
@@ -116,12 +116,13 @@ export default class Game {
 
   updateLeftPaddle() {
     if (
-      this.leftDownPressed &&
-      this.leftPaddleY < this.worldHeight - this.leftPaddleHeight
+      this.leftDownPressed 
     ) {
-      this.leftPaddleY += 0.007;
-    } else if (this.leftUpPressed && this.leftPaddleY > 0) {
-      this.leftPaddleY -= 0.007;
+      this.leftPaddleY += 0.07;
+      this.leftPaddleY  = Math.min(1, this.leftPaddleY);
+    } else if (this.leftUpPressed) {
+      this.leftPaddleY -= 0.07;
+      this.leftPaddleY = Math.max(0, this.leftPaddleY);
     }
   }
 
@@ -130,13 +131,12 @@ export default class Game {
       this.rightDownPressed &&
       this.rightPaddleY < this.worldHeight - this.rightPaddleHeight
     ) {
-      this.rightPaddleY += 0.007;
+      this.rightPaddleY -= 0.07;
     } else if (this.rightUpPressed && this.rightPaddleY > 0) {
-      this.rightPaddleY -= 0.007;
+      this.rightPaddleY += 0.07;
     }
   }
   simulate({ leftDecision, rightDecision }) {
-      console.log('Simulating', leftDecision, rightDecision);
     this.handleInput({ leftDecision, rightDecision });
     this.updateLeftPaddle();
     this.updateRightPaddle();
