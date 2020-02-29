@@ -1,8 +1,4 @@
-import SocketServer from './socket-server';
-import HttpServer from './http-server';
+import NodeServer from './node-server';
 
-const httpServer = new HttpServer(process.env.PORT || 5000);
-httpServer.start();
-
-const socketServer = new SocketServer(5001);
-socketServer.start();
+const server = new NodeServer(process.env.PORT || 5000);
+server.start();
