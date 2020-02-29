@@ -1,17 +1,8 @@
-var fs = require("fs"), http = require("http");
+import SocketServer from './socket-server';
+import HttpServer from './http-server';
 
-http
-  .createServer(function(req, res) {
-    fs.readFile(__dirname + req.url, function(err, data) {
-      if (err) {
-        res.writeHead(404);
-        res.end(JSON.stringify(err));
-        return;
-      }
-      res.writeHead(200);
-      res.end(data);
-    });
-  })
-  .listen(process.env.PORT || 5000);
+const httpServer = new HttpServer(process.env.PORT || 5000);
+httpServer.start();
 
-console.log("Server started");
+const socketServer = new SocketServer(5001);
+socketServer.start();
