@@ -12,6 +12,8 @@ const port = hostname === 'localhost' ? ':5000' : '';
 const url = `${protocol}://${hostname}${port}`;
 console.log(url);
 
+document.title = 'World of Pong';
+
 const wss = websocket(url);
 
 pipe(
