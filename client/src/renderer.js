@@ -44,10 +44,10 @@ function renderPaddle(selector, state) {
 }
 
 export function render(gameState) {
-    updatePaddles(gameState);
+//    updatePaddles(gameState);
     updateBall(gameState);
-    updatePlayerCounts(gameState.players, gameState.youAreLeft);
-    updateScores(gameState);
+//    updatePlayerCounts(gameState.players, gameState.youAreLeft);
+//    updateScores(gameState);
 }
 
 function updateBall({ball}) {
