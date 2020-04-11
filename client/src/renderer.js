@@ -46,7 +46,7 @@ function renderPaddle(selector, state) {
 export function render(gameState) {
     updatePaddles(gameState);
     updateBall(gameState);
-    updatePlayerCounts(gameState.players);
+    updatePlayerCounts(gameState.players, gameState.youAreLeft);
     updateScores(gameState);
 }
 
@@ -60,9 +60,9 @@ function updatePaddles({p1, p2}) {
     document.querySelector('#paddle-right').setAttribute('y', p2.y);
 }
 
-function updatePlayerCounts(players = { left: [], right: [] }) {
-    document.querySelector('#left-count').textContent = players.left.length;
-    document.querySelector('#right-count').textContent = players.right.length;
+function updatePlayerCounts(players = { left: [], right: [] }, youAreLeft = false) {
+    document.querySelector('#left-count').textContent = `${youAreLeft ? '->' : ''} ${players.left.length}`;
+    document.querySelector('#right-count').textContent = `${youAreLeft ? '' : '->'} ${players.right.length}`;
 }
 
 function updateScores({leftScore, rightScore}) {
