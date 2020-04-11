@@ -1,24 +1,22 @@
-import {map, pipe, merge, fromEvent} from 'callbag-basics';
+import map from 'callbag-map';
+import pipe from 'callbag-pipe';
+import merge from 'callbag-merge';
+import fromEvent from 'callbag-from-event';
 import dropRepeats from 'callbag-drop-repeats';
 import { AbsoluteOrientationSensor } from 'motion-sensors-polyfill';
 
 export function controllerSource() {
-    return deviceOrientationSource();
+    return pipe(
+        merge(modernOrientationSource(), deprecatedOrientationSource(), mouseLocationSource()),
+        dropRepeats()
+    )
 }
 
-function mouseSource() {
+function mouseLocationSource() {
     return pipe(
         fromEvent(document, 'mousemove'),
         map(ev => ev.screenY),
         map(y => y / window.screen.height)
-    )
-}
-
-function deviceOrientationSource() {
-    return pipe(
-        merge(modernOrientationSource(), deprecatedOrientationSource()),
-        map(getOrientation),
-        dropRepeats()
     )
 }
 
@@ -38,8 +36,4 @@ function deprecatedOrientationSource() {
         map(ev => ev.beta), 
         map(beta => beta/90)
     );
-}
-
-function getOrientation(beta) {
-    return beta;
 }

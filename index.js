@@ -1,3 +1,3 @@
-import NodeServer from './node-server';
+import { makePongServer } from './pong-server';
 
-new NodeServer(process.env.PORT || 5000);
+makePongServer(5000);

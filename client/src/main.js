@@ -1,6 +1,8 @@
 import websocket from 'callbag-websocket';
 import observe from 'callbag-observe';
-import {map, pipe} from 'callbag-basics';
+import map from 'callbag-map';
+import pipe from 'callbag-pipe';
+import tap from 'callbag-tap';
 import {controllerSource} from './controller';
 import init, {render} from './renderer';
 
@@ -9,30 +11,26 @@ const protocol = hostname === 'localhost' || document.location.protocol === 'htt
 const port = hostname === 'localhost' ? ':5000' : '';
 const url = `${protocol}://${hostname}${port}`;
 console.log(url);
-const ws = websocket(url);
 
-const gameState = pipe(
-    ws,
-    map(msg => JSON.parse(msg.data))
+const wss = websocket(url);
+
+pipe(
+    wss,
+    map(message => JSON.parse(message.data)),
+    tap(data => console.log('Receiving:', data)),
+    observe(render)
 );
 
-observe(draw)(gameState);
-
-const direction = pipe(
+pipe(
     controllerSource(),
-    map(direction => ({ type: 'DIRECTION', data: direction }))
+    map(direction => ({ type: 'DIRECTION', data: direction })),
+    map(data => JSON.stringify(data)),
+    tap(message => console.log('Sending:', message)),
+    observe(send)
 );
 
-observe(send)(direction);
-
-function send(msg) {
-    console.info("Sending to socket server:", msg);
-    ws(1, JSON.stringify(msg));
-}
-
-function draw(msg) {
-    console.info("Received game state:", msg);
-    render(msg);
+function send(message) {
+    wss(1, message);
 }
 
 init();
