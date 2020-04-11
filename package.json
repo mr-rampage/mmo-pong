@@ -23,15 +23,15 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-http-to-https": "^1.1.4",
-    "uuid": "^7.0.1",
-    "ws": "^7.2.1"
+    "uuid": "^7.0.3",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.6",
-    "@babel/node": "^7.8.4",
-    "@babel/polyfill": "^7.8.3",
-    "@babel/preset-env": "^7.8.6",
-    "@babel/register": "^7.8.6"
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/register": "^7.9.0"
   }
 }
