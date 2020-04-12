@@ -8,7 +8,7 @@ import interval from 'callbag-interval';
 import fromIter from 'callbag-from-iter';
 import map from 'callbag-map';
 import tap from 'callbag-tap';
-import { updateState } from './pong';
+import { getGameState } from './pong';
 
 export function makePongServer(port) {
   return (startStaticServer() |> startWebSocketServer).listen(port);
@@ -28,8 +28,9 @@ function startWebSocketServer(server) {
     |> flatMap(connection => fromEvents(connection, 'message'))
     |> subscribe(console.info);
 
-  interval(33)
-    |> map(updateState)
+  interval(42)
+    |> map(getGameState)
+    |> tap(console.log)
     |> map(data => JSON.stringify(data))
     |> subscribe(broadcast);
 

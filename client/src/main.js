@@ -4,7 +4,7 @@ import map from 'callbag-map';
 import pipe from 'callbag-pipe';
 import tap from 'callbag-tap';
 import {controllerSource} from './controller';
-import init, {render} from './renderer';
+import init, {updateGameState} from './renderer';
 
 const hostname = document.location.hostname;
 const protocol = hostname === 'localhost' || document.location.protocol === 'http:' ? 'ws' : 'wss';
@@ -20,7 +20,7 @@ pipe(
     wss,
     map(message => JSON.parse(message.data)),
     tap(data => console.log('Receiving:', data)),
-    observe(render)
+    observe(updateGameState)
 );
 
 pipe(

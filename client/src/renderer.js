@@ -1,4 +1,4 @@
-const gameState = {
+const initialState = {
     p1: {
         x: 0,
         y: 0.5,
@@ -43,6 +43,10 @@ function renderPaddle(selector, state) {
     paddle.setAttribute('y', state.y);
 }
 
+export function updateGameState(gameState) {
+    window.requestAnimationFrame(() => render(gameState));
+}
+
 export function render(gameState) {
 //    updatePaddles(gameState);
     updateBall(gameState);
@@ -71,4 +75,4 @@ function updateScores({leftScore, rightScore}) {
 }
 
 
-export default () => init(gameState);
+export default () => init(initialState);
