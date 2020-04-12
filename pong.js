@@ -1,3 +1,5 @@
+const players = {};
+
 const paddles = Object.seal({
   left: makeMoveable({ x: 0.025, y: 0.5 }, { width: 0.05, height: 0.3 }),
   right: makeMoveable({ x: 0.975, y: 0.5 }, { width: 0.05, height: 0.3 }),
@@ -5,22 +7,53 @@ const paddles = Object.seal({
 
 const ball = makeMoveable(
   { x: 0.5, y: 0.5 },
-  { width: 0.1, height: 0.1 },
-  { x: randomFloat() * 0.05, y: randomFloat() * 0.05 },
+  { width: 0.05, height: 0.05 },
+  randomVector()
 );
+
+export function updatePlayer(id, y) {
+  if (!players[id]) {
+    addPlayer(id, paddles);
+  }
+  players[id].y = y;
+}
+
+function addPlayer(id, paddles) {
+  const team = Object.keys(paddles)[Math.round(Math.random())];
+  players[id] = { team, y: 0.5 };
+}
+
+function updatePaddleVelocity(players, paddles) {
+  const readings = Object.values(players)
+    .reduce((velocity, {team, y}) => {
+      velocity[team].count += 1;
+      velocity[team].y += y;
+      return velocity;
+    }, {left: { count: 0, y: 0}, right: { count: 0, y: 0 }})
+
+  const vector = {
+    left: {y: (readings.left.y / readings.left.count) - paddles.left.position.y},
+    right: {y: (readings.right.y / readings.right.count) - paddles.right.position.y}
+  };
+
+  paddles.left.velocity.y = isNaN(vector.left.y) ? 0 : Math.max(Math.min(vector.left.y, 0.16), -0.16);
+  paddles.right.velocity.y = isNaN(vector.right.y) ? 0 : Math.max(Math.min(vector.right.y, 0.16), -0.16);
+}
 
 export function getInitialState() {
   return { paddles, ball }
 }
 
-const state = main(ball, paddles);
+const state = main(ball, paddles, players);
 
 export function getGameState() {
   return state.next().value;
 }
 
-function* main(ball, paddles) {
+function* main(ball, paddles, players) {
   while (true) {
+    updatePaddleVelocity(players, paddles);
+
     if (collidesRightPaddle(ball, paddles.right)) {
       ball.velocity = ballVelocityOnCollision(ball, paddles.right);
     }
@@ -34,14 +67,31 @@ function* main(ball, paddles) {
     }
 
     if (atRightEdge(ball) || atLeftEdge(ball)) {
-      ball.velocity.x *= -1;
+      const velocity = randomVector();
+      ball.velocity.x = velocity.x;
+      ball.velocity.y = velocity.y;
+      ball.position.x = 0.5;
+      ball.position.y = 0.5;
     }
 
+    paddles.left.position.y += paddles.left.velocity.y;
+    paddles.left.position.y = Math.max(Math.min(paddles.left.position.y, 1), 0);
+
+    paddles.right.position.y += paddles.right.velocity.y;
+    paddles.right.position.y = Math.max(Math.min(paddles.right.position.y, 1), 0);
+
     ball.position.x += ball.velocity.x;
+    ball.position.x = Math.max(Math.min(ball.position.x, 1), 0);
+
     ball.position.y += ball.velocity.y;
+    ball.position.y = Math.max(Math.min(ball.position.y, 1), 0);
 
     yield {
-      ball: { ...ball.position }
+      ball: { ...ball.position },
+      paddles: {
+        left: paddles.left.position,
+        right: paddles.right.position
+      }
     };
   }
 }
@@ -76,7 +126,14 @@ function makeMoveable(position, dimension, velocity = { x: 0, y: 0 }) {
 }
 
 function randomFloat() {
-  return Math.random() * 2 - 1;
+  return Math.random() * 0.033 - 0.016;
+}
+
+function randomVector() {
+  return {
+    x: randomFloat() * 2,
+    y: randomFloat()
+  }
 }
 
 function topEdge({ position, dimension }) {

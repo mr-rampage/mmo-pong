@@ -9,7 +9,8 @@ import fromIter from 'callbag-from-iter';
 import map from 'callbag-map';
 import tap from 'callbag-tap';
 import share from 'callbag-share';
-import { getGameState, getInitialState } from './pong';
+import { getGameState, getInitialState, updatePlayer } from './pong';
+import {v4 as uuid} from 'uuid';
 
 export function makePongServer(port) {
   return (startStaticServer() |> startWebSocketServer).listen(port);
@@ -25,8 +26,9 @@ function startWebSocketServer(server) {
   const wss = new webSocket.Server({ server });
   const onConnection = share(fromEvents(wss, 'connection'))
   onConnection
-    |> flatMap(connection => fromEvents(connection, 'message'))
-    |> subscribe(console.info);
+    |> map(ws => [ws, uuid()])
+    |> flatMap(([ws, _]) => fromEvents(ws, 'message'), ([_, id], message) => [id, JSON.parse(message)])
+    |> subscribe(([id, message]) => updatePlayer(id, message.data))
 
   onConnection
     |> subscribe(ws =>
