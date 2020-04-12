@@ -1,46 +1,25 @@
-const initialState = {
-    p1: {
-        x: 0,
-        y: 0.5,
-        l: 0.3
-    },
-    p2: {
-        x: 1,
-        y: 0.5,
-        l: 0.3
-    },
-    ball: {
-        x: 0.5,
-        y: 0.5,
-        r: 0.1
-    },
-    leftScore: 0,
-    rightScore: 0,
-    players: {
-        left: [],
-        right: []
-    }
-};
-
-function init(gameState) {
-    renderPaddle('#paddle-left', gameState.p1);
-    renderPaddle('#paddle-right', gameState.p2);
+export function init(gameState) {
     renderBall('#ball', gameState.ball);
+    renderPaddle('#paddle-left', gameState.paddles.left);
+    renderPaddle('#paddle-right', gameState.paddles.right);
 }
 
 function renderBall(selector, state) {
     const ball = document.querySelector(selector);
-    ball.setAttribute('height', state.r);
-    ball.setAttribute('width', state.r);
-    ball.setAttribute('x', state.x);
-    ball.setAttribute('y', state.y);
+    ball.setAttribute('height', state.dimension.height);
+    ball.setAttribute('width', state.dimension.width);
+    ball.setAttribute('x', state.position.x);
+    ball.setAttribute('y', state.position.y);
+    ball.setAttribute('transform', `translate(${-state.dimension.width / 2}, ${-state.dimension.height / 2})`);
 }
 
 function renderPaddle(selector, state) {
     const paddle = document.querySelector(selector);
-    paddle.setAttribute('height', state.l);
-    paddle.setAttribute('x', state.x);
-    paddle.setAttribute('y', state.y);
+    paddle.setAttribute('height', state.dimension.height);
+    paddle.setAttribute('width', state.dimension.width);
+    paddle.setAttribute('x', state.position.x);
+    paddle.setAttribute('y', state.position.y);
+    paddle.setAttribute('transform', `translate(${-state.dimension.width / 2}, ${-state.dimension.height / 2})`);
 }
 
 export function updateGameState(gameState) {
@@ -73,6 +52,3 @@ function updateScores({leftScore, rightScore}) {
     document.querySelector('#left-score').textContent = leftScore.toString();
     document.querySelector('#right-score').textContent = rightScore.toString();
 }
-
-
-export default () => init(initialState);

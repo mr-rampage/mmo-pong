@@ -8,7 +8,8 @@ import interval from 'callbag-interval';
 import fromIter from 'callbag-from-iter';
 import map from 'callbag-map';
 import tap from 'callbag-tap';
-import { getGameState } from './pong';
+import share from 'callbag-share';
+import { getGameState, getInitialState } from './pong';
 
 export function makePongServer(port) {
   return (startStaticServer() |> startWebSocketServer).listen(port);
@@ -22,16 +23,26 @@ function startStaticServer() {
 
 function startWebSocketServer(server) {
   const wss = new webSocket.Server({ server });
-  const broadcast = makeBroadcast(wss);
-
-  fromEvents(wss, 'connection')
+  const onConnection = share(fromEvents(wss, 'connection'))
+  onConnection
     |> flatMap(connection => fromEvents(connection, 'message'))
     |> subscribe(console.info);
 
-  interval(42)
+  onConnection
+    |> subscribe(ws =>
+      ws.send(JSON.stringify({
+        type: 'INITIALIZE',
+        payload: getInitialState()
+      }))
+    );
+
+  const tickRate = 33;
+  const onTick = interval(tickRate);
+  const broadcast = makeBroadcast(wss);
+  onTick
     |> map(getGameState)
-    |> tap(console.log)
-    |> map(data => JSON.stringify(data))
+    |> map(payload => ({ type: 'TICK', payload }))
+    |> map(message => JSON.stringify(message))
     |> subscribe(broadcast);
 
   return server;
